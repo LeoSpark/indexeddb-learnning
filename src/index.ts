@@ -1,6 +1,6 @@
 console.log('---- start ----');
 
-export const dbRequest = indexedDB.open('test', 1);
+export const dbRequest = indexedDB.open('test', 2);
 
 dbRequest.onsuccess = (event) => {
     console.log('success: ');
@@ -14,6 +14,10 @@ dbRequest.onsuccess = (event) => {
     }
 
     const transaction = db.transaction('books', 'readwrite');
+
+    transaction.oncomplete = () => {
+        console.log('Transaction is complete');
+    }
 
     const books = transaction.objectStore('books');
 
@@ -29,8 +33,17 @@ dbRequest.onsuccess = (event) => {
         console.log('book added to the store', request.result);
     }
 
-    request.onerror = () => {
+    request.onerror = (event) => {
         console.error('book added error', request.error);
+
+        if (request.error?.name === 'ConstraintError') {
+            console.error('Book with such id already exists'); // 处理错误
+            event.preventDefault();
+        }
+    }
+
+    transaction.onabort = () => {
+        console.log('Abort Error: ', transaction.error);
     }
 };
 
@@ -42,6 +55,7 @@ dbRequest.onupgradeneeded = () => {
     // const db = event?.target?.result;
     // console.log(db);
     console.log('onupgradeneeded');
+    alert('onupgradeneeded');
 
     const db = dbRequest.result;
 
