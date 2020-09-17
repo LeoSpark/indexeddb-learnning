@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
     "importsNotUsedAsValues": "error",
